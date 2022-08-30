@@ -279,6 +279,8 @@ def sort_table(table):
 
 
 def main():
+    send__to_gs([['Обновляем с нового сервера']], 'BestChange!A2')
+
     bestchange_data = download_bestchange(update=True)
     bestchange_rates = get_all_rates(bestchange_data[0])
     all_pairs = get_pairs(bestchange_data[1])
@@ -323,6 +325,8 @@ def main():
 
     send__to_gs(res, 'BestChange!A5')
     send__to_gs([[get_cur_time()]], 'BestChange!A2')
+    send__to_gs([['']], 'BestChange!A2')
+
     bot_send('BestChange!')
 
 
