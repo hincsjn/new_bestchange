@@ -12,7 +12,10 @@ import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 
 import zipfile, io
+import os
 import json
+
+# from flask import Flask
 
 
 start_time = time.time()
@@ -72,7 +75,6 @@ def send__to_gs(val, adress):
 def get_cur_time():
     moscow_time = str(datetime.now(pytz.timezone('Europe/Moscow')))[:19]
     return moscow_time
-
 
 
 def bot_send(table_name):
@@ -279,8 +281,7 @@ def sort_table(table):
 
 
 def main():
-    send__to_gs([['Обновляем с нового сервера']], 'BestChange!A3')
-
+    send__to_gs([['Идет обновление..']], 'BestChange!A3')
     bestchange_data = download_bestchange(update=True)
     bestchange_rates = get_all_rates(bestchange_data[0])
     all_pairs = get_pairs(bestchange_data[1])
@@ -315,20 +316,24 @@ def main():
         
         res.append(row)
 
-    res = sort_table(res)
+    
 
+    res = sort_table(res)
+    usdt_list = []
+    for i in res:
+        if 'USDT' in i[0].split('=>')[0]:
+            usdt_list.append(i)
     rows = get_gs_vals('BestChange!C2')[0][0]
 
     res = res[:int(rows)+1]
-    # for i in range(500):
-    #     res.append([[''], [''], [''], ['']])
+    usdt_list = usdt_list[:int(rows)+1]
 
-    send__to_gs(res, 'BestChange!A5')
+    send__to_gs(res, 'BestChange!A6')
+    send__to_gs(usdt_list, 'BestChange!G6')
+
     send__to_gs([[get_cur_time()]], 'BestChange!A2')
     send__to_gs([['']], 'BestChange!A3')
-
     bot_send('BestChange!')
 
 
-if __name__ == '__main__':
-    main()
+main()
