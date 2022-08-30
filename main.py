@@ -112,7 +112,12 @@ def bot_send(table_name):
 
 
     def main_bot():
-        rows = vals_notif()
+        notif_usdt = get_gs_vals('H1')
+        if notif_usdt in ['True', 'Истина', 't', 'T', 'ИСТИНА']:
+            address = 'G6:J'
+        else:
+            address = 'A6:D'
+        rows = vals_notif(address=address)
         msg = '*BestChange все:*\n'
 
         for row in rows:
