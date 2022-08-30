@@ -34,8 +34,8 @@ with open('test.json', 'w') as f:
     f.write(json.dumps(to_json))
 CREDENTIALS_FILE = 'test.json'
 # Переменные Google sheets API
-# spreadsheet_id = '1dba0Xik4GJKlZvM8o2gUapNu95drAZShtrs9MNSYWPA' 
-spreadsheet_id = '1i5HmnZbcxpjRcGs2pU2GVYaEB6Z3OjjvO0t4uKXHgKY' 
+spreadsheet_id = '1dba0Xik4GJKlZvM8o2gUapNu95drAZShtrs9MNSYWPA' 
+# spreadsheet_id = '1i5HmnZbcxpjRcGs2pU2GVYaEB6Z3OjjvO0t4uKXHgKY' 
 
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(
@@ -279,7 +279,7 @@ def sort_table(table):
 
 
 def main():
-    send__to_gs([['Обновляем с нового сервера']], 'BestChange!A2')
+    send__to_gs([['Обновляем с нового сервера']], 'BestChange!A3')
 
     bestchange_data = download_bestchange(update=True)
     bestchange_rates = get_all_rates(bestchange_data[0])
@@ -325,7 +325,7 @@ def main():
 
     send__to_gs(res, 'BestChange!A5')
     send__to_gs([[get_cur_time()]], 'BestChange!A2')
-    send__to_gs([['']], 'BestChange!A2')
+    send__to_gs([['']], 'BestChange!A3')
 
     bot_send('BestChange!')
 
