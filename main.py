@@ -113,7 +113,7 @@ def bot_send(table_name):
 
     def main_bot():
         notif_usdt = get_gs_vals('H1')
-        print(notif_usdt)
+        # print(notif_usdt)
         if notif_usdt in ['True', 'Истина', 't', 'T', 'ИСТИНА', 'TRUE']:
             address = 'G6:J'
         else:
