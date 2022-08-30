@@ -101,7 +101,7 @@ def bot_send(table_name):
         await bot.send_message(id, msg, parse_mode='Markdown')
 
 
-    def vals_notif(address='A5:D'):
+    def vals_notif(address='A6:D'):
         pairs = get_gs_vals(address, type='list')
         return pairs
 
@@ -117,6 +117,7 @@ def bot_send(table_name):
 
         for row in rows:
             pair = row[0].split(' => ')
+            # print(pair)
             val1 = pair[0]
             val2 = pair[1]
             spread = row[3]
@@ -337,3 +338,4 @@ def main():
 
 
 main()
+# bot_send('BestChange!')
