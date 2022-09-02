@@ -184,10 +184,16 @@ def get_pairs(ids):
                 pairs_binance.append((extract_code(val1), extract_code(val2)))
     # print(len(pairs))
 
+    for i in pairs_bestchange:
+        val1 = i[0]
+        val2 = i[2]
+        # if val1 == 'Ether Classic (ETC)' and val2 == 'Bitcoin (BTC)':
+        #     print(i)
+
     return pairs_bestchange, pairs_binance
 
 
-def download_bestchange(update=True):
+def download_bestchange(update=False):
     if update:
         r = requests.get('http://api.bestchange.ru/info.zip')
         z = zipfile.ZipFile(io.BytesIO(r.content))
@@ -212,23 +218,26 @@ def get_name(id):
 
         
 def get_all_rates(rates):
-    data = {}
+    data_list = {}
     for row in rates:
         val = row[0].split(';')
         try:
-            data[f'{val[0]}/{val[1]}'] = {
-                'exchange_id': int(val[2]),
-                'rate': float(val[3]) / float(val[4]),
-                'rate - 3': float(val[3]),
-                'rate - 4': float(val[4]),
-                'reserve': float(val[5]),
-                'min_sum': float(val[8]),
-                'max_sum': float(val[9]),
-                }
+            price = 1 / float(val[3]) / float(val[4])
+            try:
+                data_list[f'{val[0]}/{val[1]}'].append(price)
+            except:
+                data_list[f'{val[0]}/{val[1]}'] = [price]
         except ZeroDivisionError:
             pass
+    for key in data_list.keys():
+        max_price = max(data_list[key])
+        data_list[key] = {}
+        data_list[key]['rate'] = max_price
+
     
-    return data
+    # print(len(data_list))
+    # print(data_list['160/93'])
+    return data_list
 
 
 def get_binance_rates(pairs):
@@ -303,7 +312,7 @@ def main():
         id1 = row[1]
         id2 = row[3]
         try:
-            bestchange_price = 1 / bestchange_rates[f'{id1}/{id2}']['rate']
+            bestchange_price = bestchange_rates[f'{id1}/{id2}']['rate']
         except:
             bestchange_price = ''
 
@@ -319,17 +328,17 @@ def main():
         else:
             spread = (float(bestchange_price) - float(binance_price)) / float(binance_price)
             row = [bestchange_val1 + ' => ' + bestchange_val2, bestchange_price, binance_price, spread]
-
-        
         res.append(row)
 
-    
 
     res = sort_table(res)
     usdt_list = []
     for i in res:
         if 'USDT' in i[0].split('=>')[0]:
             usdt_list.append(i)
+    
+    # for i in usdt_list:
+    #     print(i)
     rows = get_gs_vals('BestChange!C2')[0][0]
 
     res = res[:int(rows)+1]
@@ -344,4 +353,3 @@ def main():
 
 
 main()
-# bot_send('BestChange!')
