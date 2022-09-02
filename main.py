@@ -112,6 +112,18 @@ def bot_send(table_name):
 
 
     def main_bot():
+
+        def check(val1, val2):
+            msg_list = msg.split('\n')
+            try:
+                for i in msg_list[1:]:
+                    pair = i.split(' => ')
+                    # print(pair)
+                    if pair[0] == extract_from_brackets(val1) and pair[1] == extract_from_brackets(val2):
+                        return False
+            except:
+                return True
+            return True 
         notif_usdt = get_gs_vals('H1')
         # print(notif_usdt)
         if notif_usdt in ['True', 'Истина', 't', 'T', 'ИСТИНА', 'TRUE']:
@@ -119,7 +131,7 @@ def bot_send(table_name):
         else:
             address = 'A6:D'
         rows = vals_notif(address=address)
-        msg = '*BestChange все:*\n'
+        msg = '*BestChange:*\n'
 
         for row in rows:
             pair = row[0].split(' => ')
@@ -135,13 +147,13 @@ def bot_send(table_name):
                 min_spread = 0
             min_spread = float(min_spread)
             
-
             if '%' in spread:
                 spread = spread[:-1]
             if ',' in spread:
                 spread = spread.replace(',', '.')
             spread = float(spread)
-            if spread >= min_spread and not(extract_from_brackets(val2) in msg):
+            
+            if spread >= min_spread and check(val1, val2):
                 val1 = extract_from_brackets(val1)
                 val2 = extract_from_brackets(val2)
                 msg += f'{val1} => {val2}: {spread}%\n'
@@ -149,7 +161,7 @@ def bot_send(table_name):
                 break
 
 
-        if msg != '*BestChange все:*\n':
+        if msg != '*BestChange:*\n':
             asyncio.run(send_msg(msg=msg))
             print(msg)
         else:
@@ -353,3 +365,4 @@ def main():
 
 
 main()
+# bot_send('BestChange!')
